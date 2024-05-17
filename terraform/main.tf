@@ -1,10 +1,12 @@
 provider "aws" {
-  region = "us-east-1"  
+  region = "us-east-1"
 }
 
 resource "aws_ecs_cluster" "cluster" {
   name = "hello-world-nodejs-cluster"
 }
+
+variable "image_url" {}
 
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = "hello-world-nodejs-task"
@@ -16,7 +18,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   container_definitions = jsonencode([
     {
       name      = "hello-world-nodejs-container"
-      image     = "f86c6492a6bc"  # Update with your Docker image URL
+      image     = var.image_url
       cpu       = 256
       memory    = 512
       essential = true
