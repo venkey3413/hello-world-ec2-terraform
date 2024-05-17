@@ -1,12 +1,12 @@
-name: Deploy to ECS
+name: Deploy to ECS/Fargate
 
 on:
   push:
     branches:
-      - main  # or the branch you want to trigger the workflow
+      - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,33 +16,28 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Set in GitHub Secrets
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Set in GitHub Secrets
-          aws-region: us-east-1  # Your AWS region
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Log in to Amazon ECR
+      - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, tag, and push Docker image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}  # The ECR registry URL
-          ECR_REPOSITORY: hello-world-nodejs  # Your ECR repository name
-          IMAGE_TAG: latest  # The image tag
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: my-repository
+          IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Deploy to ECS
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}  # The ECR registry URL
-          ECR_REPOSITORY: hello-world-nodejs  # Your ECR repository name
-          IMAGE_TAG: latest  # The image tag
-        run: |
-          cd terraform
-          terraform init
-          terraform apply -auto-approve \
-            -var "image_url=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      - name: Deploy to ECS/Fargate
+        uses: aws-actions/ecs-deploy@v2
+        with:
+          cluster: my-cluster
+          service: my-service
+          task_definition: my-task
+          image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          wait-for-service-stability: true
