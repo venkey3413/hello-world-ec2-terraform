@@ -31,7 +31,6 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   }])
 }
 
-}
 
 resource "aws_ecs_service" "ecs_service" {
   name            = "my-ecs-service"
