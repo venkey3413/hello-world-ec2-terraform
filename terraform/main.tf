@@ -40,30 +40,12 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = ["subnet-12345678"]  # Replace with your subnet ID
-    security_groups = ["sg-12345678"]      # Replace with your security group ID
+    subnets         = ["subnet-05d87a98545cd0c56"]  
+    security_groups = ["sg-0561a79cc8203131b"]      
     assign_public_ip = true
   }
 }
 
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      }
-      Action = "sts:AssumeRole"
-    }]
-  })
-
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-  ]
-}
 
 variable "docker_image" {
   description = "Docker image name"
