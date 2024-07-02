@@ -7,7 +7,7 @@ provider "aws" {
 resource "aws_instance" "nodejs_app" {
   ami           = ami-06c68f701d8090592
   instance_type = var.instance_type
-  key_name      = var.key_name
+  key_name      = key.pem
 
   tags = {
     Name = "nodejs-docker-app"
