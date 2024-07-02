@@ -15,9 +15,6 @@ variable "key_name" {
   description = "key"
 }
 
-variable "key_path" {
-  description = ""/home/venkey_3413/.ssh/key.pem""
-}
 
 variable "docker_image" {
   description = "docker pull venkey3413/my-node-app:latest"
