@@ -1,13 +1,6 @@
-variable "aws_access_key" {
-  description = "AWS access key"
-}
-
-variable "aws_secret_key" {
-  description = "AWS secret key"
-}
 
 variable "region" {
-  default = "us-west-2"
+  default = "us-east-1"
 }
 
 variable "instance_type" {
@@ -15,17 +8,17 @@ variable "instance_type" {
 }
 
 variable "ami_id" {
-  default = "ami-0c55b159cbfafe1f0"  # Replace with your preferred AMI ID
+  default = "ami-06c68f701d8090592"  # Replace with your preferred AMI ID
 }
 
 variable "key_name" {
-  description = "Name of the key pair"
+  description = "key"
 }
 
 variable "key_path" {
-  description = "Path to the private key file"
+  description = ""/home/venkey_3413/.ssh/key.pem""
 }
 
 variable "docker_image" {
-  description = "Docker image to deploy"
+  description = "docker pull venkey3413/my-node-app:latest"
 }
